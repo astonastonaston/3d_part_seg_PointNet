@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
 
 import torch
 import torch.nn as nn
@@ -12,9 +7,6 @@ from torch.autograd import Variable
 import numpy as np
 import torch.nn.functional as F
 from dataloader import ShapeNetData
-
-
-# In[16]:
 
 
 class STN3d(nn.Module):
@@ -36,11 +28,6 @@ class STN3d(nn.Module):
 
 
     def forward(self, x):
-        #x= torch.permute(x, (0,2,1))
-        #batchsize = x.size()[0]
-        # print("before fwing")
-        # print(x, x.shape)
-        # x = x.float() 
         x = F.relu(self.bn1(self.conv1(x)))
         x = F.relu(self.bn2(self.conv2(x)))
         x = F.relu(self.bn3(self.conv3(x)))
@@ -119,9 +106,7 @@ class PointNetfeature(nn.Module):
         
     def forward(self, x):
         n_pts = x.size()[2]
-        #x= torch.permute(x, (0,2,1))
         trans = self.stn(x) # given double x, stn outputs float trans
-        # trans = trans.double() # cast to double to do bmm
 
         x = x.transpose(2, 1)
         x = torch.bmm(x, trans)
@@ -178,7 +163,7 @@ class PointNetSegmenter(nn.Module):
     def forward(self, x):
         batchsize = x.size()[0]
         n_pts = x.size()[2] # (32, 3, 2907)
-        print(x, x.shape)
+        # print(x, x.shape)
         x, trans, trans_feat = self.feat(x)
         x = self.dp1(F.relu(self.bn1(self.conv1(x))))
         x = self.dp2(F.relu(self.bn2(self.conv2(x))))
